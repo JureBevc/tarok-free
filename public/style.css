@@ -1,0 +1,18 @@
+/*
+https://coolors.co/fe5f55-f0b67f-d6d1b1-c7efcf-eef5db
+*/
+
+html, body{
+  margin-left: 7.5%;
+  margin-right: 7.5%;
+  margin-top: 1%;
+  background-color: #EEF5DB;
+}
+
+#game-container{
+  text-align: center;
+}
+
+canvas{
+  border: 1px solid black;
+}
