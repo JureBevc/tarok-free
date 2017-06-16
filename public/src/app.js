@@ -19,7 +19,7 @@ Main.init = function(){
 
 // Main update funciton
 Main.update = function(){
-
+  console.log(Input.x + " " + Input.y + " " + Input.down);
 }
 
 // Main draw funciton

@@ -7,12 +7,17 @@ html, body{
   margin-right: 7.5%;
   margin-top: 1%;
   background-color: #EEF5DB;
-}
-
-#game-container{
   text-align: center;
 }
 
 canvas{
   border: 1px solid black;
+}
+
+#hidden-joke{
+  color: #cccccc;
+}
+
+#game-container{
+  text-align: center;
 }
