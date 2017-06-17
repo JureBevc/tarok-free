@@ -7,33 +7,28 @@ var canvas = document.getElementById("canvas"),
     c = canvas.getContext("2d");
 
 // Initialize socket.io
-// var socket = io();
+var socket = io();
 
 // Create main class
 var Main = {};
 
 // Initialize main
 Main.init = function(){
-  Img.loadCards();
+  Game.init();
 }
 
 // Main update funciton
 Main.update = function(){
+  Game.update();
+  Input.click = false;
 }
 
 // Main draw funciton
 Main.draw = function(){
+  // Clear screen and draw colored background
   c.clearRect(0, 0, canvas.width, canvas.height);
-  c.fillStyle = "#D6D1B1";
-  c.fillRect(0, 0, canvas.width, canvas.height);
-  for(var i = 0; i < Img.kara.length; i++){
-    c.drawImage(Img.kara[i], i * 50, 0);
-    c.drawImage(Img.kriz[i], i * 50, 100);
-    c.drawImage(Img.pik[i], i * 50, 200);
-    c.drawImage(Img.srce[i], i * 50, 300);
-  }
-  for(var i = 0; i < Img.tarok.length; i++)
-    c.drawImage(Img.tarok[i], i * 25, 400);
+  Draw.rect(0,0,canvas.width, canvas.height, "#D6D1B1");
+  Game.draw();
 }
 
 // Main game loop

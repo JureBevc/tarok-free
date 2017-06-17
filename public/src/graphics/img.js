@@ -1,3 +1,6 @@
+/*
+    Storing and loading all images
+*/
 var Img = {};
 
 Img.kara = [];

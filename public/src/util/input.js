@@ -35,6 +35,7 @@ var Input = {
 Input.x = 0;
 Input.y = 0;
 Input.down = false;
+Input.click = false;
 Input.key = [];
 
 
@@ -53,6 +54,7 @@ Input.mousedown = function(){
 
 Input.mouseup = function(){
   Input.down = false;
+  Input.click = true;
 }
 
 // Key events
