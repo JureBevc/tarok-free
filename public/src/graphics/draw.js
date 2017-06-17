@@ -23,6 +23,6 @@ Draw.rect = function(x, y, w, h, color, strokeWidth){
 // For drawing text
 Draw.text = function(text, x, y, size, color){
   c.fillStyle = color;
-  c.font =  size + "px Arial";
+  c.font =  size + "px Tahoma";
   c.fillText(text, x, y);
 }

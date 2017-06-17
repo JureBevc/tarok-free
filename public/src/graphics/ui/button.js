@@ -14,14 +14,18 @@ var Button = function(text,color, x, y, w, h, action){
 
   // Perform button action
   this.doAction = function(){
-    this.action();
+    if(this.action != null)
+      this.action();
   }
 
   // Draw button
   this.draw = function(){
-    //Draw.rect(this.x, this.y, this.w, this.h, this.color);
-    Draw.text(this.text, this.x, this.y + this.h - 3, 20, "#000000");
-    if(this.hover)
+    if(this.action)
+      Draw.rect(this.x, this.y, this.w, this.h, this.color);
+    Draw.text(this.text, this.x + 10, this.y + this.h - 3, 20, "#2D3142");
+    if(this.hover && this.action)
       Draw.rect(this.x, this.y, this.w, this.h, "#61988E", 2);
+    else if(this.action)
+      Draw.rect(this.x, this.y, this.w, this.h, "#2D3142", 1);
   }
 };
