@@ -61,8 +61,11 @@ Input.mouseup = function(){
 Input.keydown = function(evt){
   // Parse typed input to current input field
   for(var i = 0; i < Menu.current.length; i++){
-    if(Menu.current[i] instanceof InputField && evt.keyCode >= 65 && evt.keyCode <= 90){
-      Menu.current[i].inputTyped(String.fromCharCode(evt.keyCode));
+    if(Menu.current[i] instanceof InputField && (evt.keyCode >= 65 && evt.keyCode <= 90 || evt.keyCode == 8)){
+      if(evt.keyCode == 8)
+        Menu.current[i].inputTyped("back");
+      else
+        Menu.current[i].inputTyped(String.fromCharCode(evt.keyCode));
     }
   }
   Input.key[evt.keyCode] = true;

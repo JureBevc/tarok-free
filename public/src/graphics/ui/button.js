@@ -22,7 +22,7 @@ var Button = function(text,color, x, y, w, h, action){
   this.draw = function(){
     if(this.action)
       Draw.rect(this.x, this.y, this.w, this.h, this.color);
-    Draw.text(this.text, this.x + 10, this.y + this.h - 3, 20, "#2D3142");
+    Draw.text(this.text, this.x + 10, this.y + this.h - 6, 20, "#2D3142");
     if(this.hover && this.action)
       Draw.rect(this.x, this.y, this.w, this.h, "#61988E", 2);
     else if(this.action)
