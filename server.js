@@ -10,9 +10,9 @@ app.use(express.static('public'));
 
 
 io.on('connection', function(socket){
-  console.log('a user connected');
+  //console.log('a user connected');
   socket.on('disconnect', function(){
-    console.log('user disconnected');
+    //console.log('user disconnected');
     for(var i = 0; i < names.length; i++){
       if(names[i].id == socket.id){
         names.splice(i, 1);
@@ -43,6 +43,8 @@ io.on('connection', function(socket){
 
   // Handle rooms
   socket.on("createroom", function(msg){
+    console.log(msg);
+    console.log(rooms);
     var success = true;
     for(var i = 0; i < rooms.length; i++){
       if(msg.name.length < 3){
@@ -57,6 +59,7 @@ io.on('connection', function(socket){
     }
     if(success)
       rooms.push(msg);
+    console.log(rooms);
   });
 
 });

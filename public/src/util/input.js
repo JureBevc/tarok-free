@@ -2,35 +2,7 @@
     Mouse and keyboard input class
 */
 
-var Input = {
-  a:65,
-  b:66,
-  c:67,
-  d:68,
-  e:69,
-  f:70,
-  g:71,
-  h:72,
-  i:73,
-  j:74,
-  k:75,
-  l:76,
-  m:77,
-  n:78,
-  o:79,
-  p:80,
-  q:81,
-  r:82,
-  s:83,
-  t:84,
-  u:85,
-  v:86,
-  w:87,
-  x:88,
-  y:89,
-  z:90,
-  space: 32
-};
+var Input = {};
 
 Input.x = 0;
 Input.y = 0;
@@ -60,13 +32,14 @@ Input.mouseup = function(){
 // Key events
 Input.keydown = function(evt){
   // Parse typed input to current input field
-  for(var i = 0; i < Menu.current.length; i++){
-    if(Menu.current[i] instanceof InputField && (evt.keyCode >= 65 && evt.keyCode <= 90 || evt.keyCode == 8)){
-      if(evt.keyCode == 8)
-        Menu.current[i].inputTyped("back");
-      else
-        Menu.current[i].inputTyped(String.fromCharCode(evt.keyCode));
-    }
+    if(evt.keyCode >= 65 && evt.keyCode <= 90 || evt.keyCode == 8){
+      if(evt.keyCode == 8){
+        evt.preventDefault();
+        evt.stopPropagation();
+        Menu.current.typed("back");
+        return true;
+      }else
+        Menu.current.typed(String.fromCharCode(evt.keyCode));
   }
   Input.key[evt.keyCode] = true;
 }
@@ -81,5 +54,5 @@ canvas.addEventListener("mousedown", Input.mousedown);
 canvas.addEventListener("mouseup", Input.mouseup);
 
 // keyboard event listeners
-window.addEventListener('keydown',Input.keydown);
+window.addEventListener('keydown',Input.keydown, true);
 window.addEventListener('keyup',Input.keyup);
