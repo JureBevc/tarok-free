@@ -3,8 +3,6 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-var names = [];
-
 // Serve all static files in public folder
 app.use(express.static('public'));
 
@@ -19,6 +17,11 @@ io.on('connection', function(socket){
         break;
       }
     }
+    for(var i = 0; i < rooms.length; i++)
+      for(var j = 0; j < rooms[i].players.length; j++){
+        if(rooms[i].players[j].id == socket.id)
+          rooms[i].players.splice(j, 1);
+        }
   });
 
   // Handle names
@@ -41,10 +44,8 @@ io.on('connection', function(socket){
     socket.emit('namecheck-answer', answer);
   });
 
-  // Handle rooms
+  // Handle room creation
   socket.on("createroom", function(msg){
-    console.log(msg);
-    console.log(rooms);
     var success = true;
     for(var i = 0; i < rooms.length; i++){
       if(msg.name.length < 3){
@@ -57,17 +58,65 @@ io.on('connection', function(socket){
         break;
       }
     }
-    if(success)
-      rooms.push(msg);
-    console.log(rooms);
+    if(success){
+      socket.emit("createroom-response", "OK");
+      rooms.push({name: msg.name, pass: msg.pass, owner: socket.id, players: [], playing: false});
+    }
+  });
+
+  // Handle joining rooms
+  socket.on("joinroom", function(msg){
+    console.log("Joining room " + msg);
+    var answer = "Soba ne obstaja.";
+    for(var i = 0; i < rooms.length; i++){
+      if(rooms[i].name == msg.name){
+        if(rooms[i].pass.toUpperCase() == msg.pass.toUpperCase()){
+          if(rooms[i].players.length < 4){
+            rooms[i].players.push(getPlayer(socket.id));
+            answer = "OK";
+          }else{
+            answer = "Soba je polna."
+          }
+        }else{
+          answer = "Napačno geslo.";
+        }
+      }
+    }
+    socket.emit("joinroom-response", answer);
+  });
+
+  socket.on("begin-game", function(msg){
+    var answer = "Soba ne obstaja";
+    for(var i = 0; i < rooms.length; i++){
+      if(rooms[i].name == msg){
+        if(rooms[i].players.length == 3 || rooms[i].players.length == 4){
+          answer = "OK";
+          rooms[i].playing = true;
+        }else
+          answer = "Soba mora imeti 3 ali štiri igralce";
+      }
+    }
+    socket.emit("begin-game-" + msg, answer);
   });
 
 });
+
+var names = [];
+
+function getPlayer(id){
+  for(var i = 0; i < names.length; i++){
+    if(names[i].id == id)
+      return names[i];
+  }
+}
 
 var rooms = [];
 
 function sendRoomData(){
   io.sockets.emit("roomdata", rooms);
+  for(var i = 0; i < rooms.length; i++){
+    io.sockets.emit(rooms[i].name, rooms[i]);
+  }
 }
 
 // Start server

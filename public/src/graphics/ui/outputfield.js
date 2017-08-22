@@ -30,7 +30,7 @@ var OutputField = function(tag, text, color, x, y, w, h){
   // Draw button
   this.draw = function(){
     //Draw.rect(this.x, this.y, this.w, this.h, this.color, 2);
-    Draw.text(this.text, this.x + 10, this.y + this.h - 3, 20, "#2D3142");
+    Draw.text(this.text, this.x + 10, this.y + this.h - 3, 20, this.color);
 
     for(var i = 0; i < this.elements.length; i++)
       this.elements[i].draw();

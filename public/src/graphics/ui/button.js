@@ -30,7 +30,7 @@ var Button = function(tag, text, color, x, y, w, h, action){
   // Perform button action
   this.doAction = function(){
     if(this.action != null)
-      this.action();
+      this.action(this);
   }
 
   this.update = function(){
