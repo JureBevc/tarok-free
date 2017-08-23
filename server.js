@@ -60,13 +60,12 @@ io.on('connection', function(socket){
     }
     if(success){
       socket.emit("createroom-response", "OK");
-      rooms.push({name: msg.name, pass: msg.pass, owner: socket.id, players: [], playing: false});
+      rooms.push({name: msg.name, pass: msg.pass, owner: socket.id, players: [], playing: false, seat: [], chat: []});
     }
   });
 
   // Handle joining rooms
   socket.on("joinroom", function(msg){
-    console.log("Joining room " + msg);
     var answer = "Soba ne obstaja.";
     for(var i = 0; i < rooms.length; i++){
       if(rooms[i].name == msg.name){
@@ -99,6 +98,25 @@ io.on('connection', function(socket){
     socket.emit("begin-game-" + msg, answer);
   });
 
+  socket.on("pick-seat", function(msg) {
+    var answer = "Soba ne obstaja";
+    for(var i = 0; i < rooms.length; i++){
+      if(rooms[i].name == msg.name){
+        if(rooms[i].seat[msg.seat - 1] == null){
+          for(var j = 0; j < 4; j++)
+           if(rooms[i].seat[j] != null && rooms[i].seat[j].name == getPlayer(socket.id).name)
+            rooms[i].seat[j] = null;
+          rooms[i].seat[msg.seat - 1] = getPlayer(socket.id);
+          answer = "OK";
+        }else{
+          answer = "Sedež je zaseden";
+        }
+        break;
+      }
+    }
+    socket.emit("pick-seat-response", answer);
+  });
+
 });
 
 var names = [];
@@ -116,12 +134,17 @@ function sendRoomData(){
   io.sockets.emit("roomdata", rooms);
   for(var i = 0; i < rooms.length; i++){
     io.sockets.emit(rooms[i].name, rooms[i]);
+
+    // When playing
+    if(rooms[i].playing){
+      io.sockets.emit("game-info-" + rooms[i].name, rooms[i]);
+    }
   }
 }
 
 // Start server
 http.listen(3000, function(){
   console.log('listening on *:3000');
-  // Send room data to all clients every second
-  setInterval(sendRoomData, 1000);
+  // Send room data to all clients
+  setInterval(sendRoomData, 500);
 });

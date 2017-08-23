@@ -6,8 +6,15 @@
 var Menu = function(){
   this.elements = [];
 
+  var firstField = true;
   this.add = function(element){
+    // First input of menu is selected by default
+    if(element instanceof InputField && firstField){
+      firstField = false;
+      element.active = true;
+    }
     this.elements.push(element);
+
   }
 
   this.get = function(tag){
@@ -99,6 +106,54 @@ Menu.init = function(){
   Menu.room.add(new OutputField("Room name text", "Soba:", "#2D3142", 50, 50, 100, 30));
   Menu.room.add(new OutputField("Players in room text", "Igralci v sobi:", "#2D3142", 50, 100, 100, 30));
   Menu.room.add(new OutputField("Room response text", "", "#FF0000", 200, 0, 100, 30));
+  Menu.room.add(new OutputField("Select seat text", "Izberite sedež:", "#2D3142", 50, 150, 100, 30));
+  Menu.room.add(new Button("Seat 1 button", "Sedež 1", "#BFC0C0", 100, 200, 90, 30, function(){
+      socket.emit("pick-seat", {seat: 1, name: Game.roomname});
+      socket.on("pick-seat-response", function(msg){
+        if(msg == "OK")
+            Menu.current.get("Room response text").text = "Sedite na sedežu 1";
+        else
+            Menu.current.get("Room response text").text = msg;
+        socket.off("pick-seat-response");
+      });
+  }));
+  Menu.room.add(new OutputField("Seat 1 text", "", "#2D3142", 200, 200 - 5, 90, 30));
+
+  Menu.room.add(new Button("Seat 2 button", "Sedež 2", "#BFC0C0", 100, 250, 90, 30, function(){
+    socket.emit("pick-seat", {seat: 2, name: Game.roomname});
+    socket.on("pick-seat-response", function(msg){
+      if(msg == "OK")
+          Menu.current.get("Room response text").text = "Sedite na sedežu 2";
+      else
+          Menu.current.get("Room response text").text = msg;
+      socket.off("pick-seat-response");
+    });
+  }));
+  Menu.room.add(new OutputField("Seat 2 text", "", "#2D3142", 200, 250 - 5, 90, 30));
+
+  Menu.room.add(new Button("Seat 3 button", "Sedež 3", "#BFC0C0", 100, 300, 90, 30, function(){
+    socket.emit("pick-seat", {seat: 3, name: Game.roomname});
+    socket.on("pick-seat-response", function(msg){
+      if(msg == "OK")
+          Menu.current.get("Room response text").text = "Sedite na sedežu 3";
+      else
+          Menu.current.get("Room response text").text = msg;
+      socket.off("pick-seat-response");
+    });
+  }));
+  Menu.room.add(new OutputField("Seat 3 text", "", "#2D3142", 200, 300 - 5, 90, 30));
+
+  Menu.room.add(new Button("Seat 4 button", "Sedež 4", "#BFC0C0", 100, 350, 90, 30, function(){
+    socket.emit("pick-seat", {seat: 4, name: Game.roomname});
+    socket.on("pick-seat-response", function(msg){
+      if(msg == "OK")
+          Menu.current.get("Room response text").text = "Sedite na sedežu 4";
+      else
+          Menu.current.get("Room response text").text = msg;
+      socket.off("pick-seat-response");
+    });
+  }));
+  Menu.room.add(new OutputField("Seat 4 text", "", "#2D3142", 200, 350 - 5, 90, 30));
 
   // Set initial current menu
   Menu.current = Menu.login;
@@ -142,7 +197,6 @@ Menu.joinRoom = function(roomname, password, isOwner){
       Menu.current.get("Room name text").text = "Soba: " + roomname;
       if(isOwner)
         Menu.current.add(new Button("Start game button", "Začni igro", "#BFC0C0", 500, 50, 120, 30, function(){
-          console.log("Začetek igre!");
           socket.emit("begin-game", roomname);
           socket.on("begin-game-" + roomname, function(msg){
             Game.playResponse(msg);
@@ -162,5 +216,11 @@ Menu.getRoomInfo = function(msg){
     for(var i = 0; i < msg.players.length; i++)
       players += msg.players[i].name + ((i + 1 == msg.players.length)? "": ", ");
     Menu.current.get("Players in room text").text = "Igralci v sobi: " + players;
+    for(var i = 0; i < 4; i++){
+      if(msg.seat[i] != null)
+          Menu.current.get("Seat " + (i + 1) + " text").text = msg.seat[i].name;
+      else
+          Menu.current.get("Seat " + (i + 1) + " text").text = "";
+    }
   }
 }
